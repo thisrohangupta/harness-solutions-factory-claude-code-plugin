@@ -3,7 +3,7 @@
 # Outputs JSON with pass/fail/warn status for each check
 set -euo pipefail
 
-REPO_ROOT="$(cd "$(dirname "$0")/../.." && pwd)"
+REPO_ROOT="$(cd "$(dirname "$0")/.." && pwd)"
 
 echo "{"
 echo "  \"prerequisites\": {"

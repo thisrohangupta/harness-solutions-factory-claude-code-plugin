@@ -1,0 +1,40 @@
+## Terraform / OpenTofu
+# Local .terraform directories
+**/.terraform/*
+**/.terraform.lock.hcl
+
+# .tfstate files
+*.tfstate
+*.tfstate.*
+*.tfplan
+*.tfplan.out
+
+# Crash log files
+crash.log
+
+# Generated tfvars (created by plugin at runtime)
+*.tfvars
+!*.auto.tfvars
+
+# Override files
+override.tf
+override.tf.json
+*_override.tf
+*_override.tf.json
+*.local.tf
+*_local.tf
+
+# Provider files (generated from providers.tf.example)
+**/*providers.tf
+**/*backend.tf
+
+# Rendered output
+**/rendered/ignored
+rendered/.keep
+
+## OS
+**/.DS_Store
+
+## Misc
+*.local
+**/mise.local.toml

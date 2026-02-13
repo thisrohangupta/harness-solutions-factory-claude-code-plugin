@@ -3,7 +3,7 @@
 # Outputs JSON array of modules with status
 set -euo pipefail
 
-REPO_ROOT="$(cd "$(dirname "$0")/../.." && pwd)"
+REPO_ROOT="$(cd "$(dirname "$0")/.." && pwd)"
 
 MODULES=(
     "harness-platform-setup"

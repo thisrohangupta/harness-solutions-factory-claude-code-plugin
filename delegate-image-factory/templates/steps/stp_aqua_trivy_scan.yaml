@@ -1,0 +1,35 @@
+- step:
+          type: AquaTrivy
+          name: AquaTrivy
+          identifier: AquaTrivy
+          spec:
+            mode: orchestration
+            config: default
+            target:
+              type: container
+              %{~ if !USE_HARNESS_CLOUD ~}
+              workspace: /opt/docker_cache/image.tar
+              %{~ endif ~}
+              detection: manual
+              name: <+stepGroup.variables.BUILD_TARGET_IMAGE>
+              variant: <+stepGroup.variables.BUILD_TARGET_TAG>
+            advanced:
+              log:
+                level: info
+            resources:
+              limits:
+                memory: 4Gi
+                cpu: "2"
+            privileged: true
+            imagePullPolicy: Always
+            image:
+            %{~ if USE_HARNESS_CLOUD ~}
+              type: local_image
+              tag: <+stepGroup.variables.CACHE_TARGET_TAG>
+              name: <+stepGroup.variables.BUILD_TARGET_IMAGE>
+            %{~ else ~}
+              type: local_archive
+              tag: <+stepGroup.variables.CACHE_TARGET_TAG>
+            %{~ endif ~}
+            sbom:
+              format: spdx-json

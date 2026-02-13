@@ -3,7 +3,7 @@
 # Usage: read-state.sh <module-dir>
 set -euo pipefail
 
-REPO_ROOT="$(cd "$(dirname "$0")/../.." && pwd)"
+REPO_ROOT="$(cd "$(dirname "$0")/.." && pwd)"
 MODULE_DIR="$REPO_ROOT/${1:-}"
 
 if [ ! -d "$MODULE_DIR" ]; then

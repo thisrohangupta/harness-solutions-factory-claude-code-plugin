@@ -6,7 +6,7 @@ set -euo pipefail
 
 MODULE_DIR="$1"
 JSON_VALUES="$2"
-REPO_ROOT="$(cd "$(dirname "$0")/../.." && pwd)"
+REPO_ROOT="$(cd "$(dirname "$0")/.." && pwd)"
 TARGET_DIR="$REPO_ROOT/$MODULE_DIR"
 OUTPUT_FILE="$TARGET_DIR/terraform.tfvars"
 
