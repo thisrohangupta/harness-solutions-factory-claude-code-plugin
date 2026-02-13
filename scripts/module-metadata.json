@@ -1,0 +1,178 @@
+{
+  "modules": {
+    "harness-platform-setup": {
+      "level": "account",
+      "description": "Account-level baseline: shared resource roles, admin user groups, OPA governance policies",
+      "dependencies": [],
+      "creates": ["roles", "user_groups", "policies", "policy_sets"],
+      "category": "platform",
+      "outputs": []
+    },
+    "harness-organization": {
+      "level": "account",
+      "description": "Create and configure a Harness Organization with roles, groups, environments, and governance",
+      "dependencies": [],
+      "creates": ["organization", "roles", "user_groups", "resource_groups", "environments", "policies"],
+      "category": "platform",
+      "outputs": ["organization_identifier", "organization_url"]
+    },
+    "harness-project": {
+      "level": "organization",
+      "description": "Create and configure a Harness Project within an organization",
+      "dependencies": ["harness-organization"],
+      "creates": ["project", "roles", "user_groups", "resource_groups", "environments", "policies"],
+      "category": "platform",
+      "outputs": ["organization_identifier", "project_identifier", "project_url"]
+    },
+    "central-build-farm-setup": {
+      "level": "account",
+      "description": "Account-level connectors: SCM (GitHub/GitLab/Bitbucket), container registry, artifact manager",
+      "dependencies": [],
+      "creates": ["kubernetes_connector", "scm_connector", "container_registry_connector", "artifact_manager_connector"],
+      "category": "infrastructure",
+      "outputs": ["build_farm_connector", "build_farm_container_registry", "build_farm_source_code_manager", "build_farm_artifact_manager"]
+    },
+    "ci-module-primer": {
+      "level": "org_or_project",
+      "description": "CI stage and step group templates with optional STO and supply chain security",
+      "dependencies": ["harness-organization"],
+      "creates": ["stage_templates", "step_group_templates"],
+      "category": "ci",
+      "outputs": ["step_group_templates", "stage_template"]
+    },
+    "ci-golden-pipeline": {
+      "level": "project",
+      "description": "Pre-built CI pipeline for a repository with webhook triggers and input sets",
+      "dependencies": ["harness-project", "ci-module-primer"],
+      "creates": ["pipeline", "input_set", "triggers"],
+      "category": "ci",
+      "outputs": ["pipeline_url", "pipeline_executions_url", "pipeline_identifier"]
+    },
+    "ci-sto-hcr-standard": {
+      "level": "project",
+      "description": "CI + STO pipeline with Harness Code Repository, branch rules, and webhooks",
+      "dependencies": ["harness-project"],
+      "creates": ["repository", "pipeline", "triggers", "input_sets"],
+      "category": "ci_security",
+      "outputs": ["resource_placement", "pipeline_template_id"]
+    },
+    "sto-sast-primer": {
+      "level": "any",
+      "description": "SAST/SCA scanning templates: Gitleaks, OSV, OWASP, Semgrep with config manager",
+      "dependencies": [],
+      "creates": ["pipeline_templates", "stage_templates", "step_group_templates", "step_templates", "repository"],
+      "category": "security",
+      "outputs": ["resource_placement", "pipeline_template_id"]
+    },
+    "ccm-k8s-connectors": {
+      "level": "account",
+      "description": "Manual Kubernetes + CCM connector pair for a specific cluster",
+      "dependencies": [],
+      "creates": ["k8s_connector", "ccm_connector"],
+      "category": "ccm",
+      "outputs": ["k8s_connector_id", "ccm_k8s_connector_id"]
+    },
+    "ccm-auto-k8s-connectors": {
+      "level": "project",
+      "description": "Pipeline that auto-discovers and registers K8s clusters for CCM",
+      "dependencies": ["harness-project"],
+      "creates": ["pipeline", "trigger"],
+      "category": "ccm",
+      "outputs": ["harness_platform_pipeline_id", "harness_platform_trigger_id"]
+    },
+    "ccm-autostop-primer": {
+      "level": "project",
+      "description": "AutoStopping templates and pipeline for idle resource management",
+      "dependencies": ["harness-project"],
+      "creates": ["step_template", "pipeline"],
+      "category": "ccm",
+      "outputs": ["template", "pipeline"]
+    },
+    "ccm-cluster-orchestrator-deployment": {
+      "level": "any",
+      "description": "Cluster Orchestrator service for spot instance optimization",
+      "dependencies": [],
+      "creates": ["helm_connector", "service"],
+      "category": "ccm",
+      "outputs": ["harness_platform_connector_helm", "harness_platform_service"]
+    },
+    "rbac-manager": {
+      "level": "project",
+      "description": "Centralized RBAC management pipeline for group membership automation",
+      "dependencies": ["harness-project"],
+      "creates": ["pipeline"],
+      "category": "platform",
+      "outputs": ["pipeline_url"]
+    },
+    "harness-ci-image-factory": {
+      "level": "project",
+      "description": "Pipeline to migrate Harness CI images to customer container registry",
+      "dependencies": ["harness-project"],
+      "creates": ["pipeline", "triggers"],
+      "category": "infrastructure",
+      "outputs": ["pipeline_url", "pipeline_identifier"]
+    },
+    "delegate-image-factory": {
+      "level": "project",
+      "description": "Pipeline to build custom delegate images with additional tooling",
+      "dependencies": ["harness-project"],
+      "creates": ["pipeline", "repository"],
+      "category": "infrastructure",
+      "outputs": ["repository_url", "pipeline"]
+    },
+    "secret_manager_github_pat": {
+      "level": "any",
+      "description": "GitHub PAT secret manager step template for dynamic token generation",
+      "dependencies": [],
+      "creates": ["step_template"],
+      "category": "secrets",
+      "outputs": ["template_id"]
+    },
+    "secret-manager-cyberark-conjur": {
+      "level": "any",
+      "description": "CyberArk Conjur integration step template for vault secrets",
+      "dependencies": [],
+      "creates": ["step_template"],
+      "category": "secrets",
+      "outputs": ["template_id"]
+    },
+    "ansible-step-group-template": {
+      "level": "any",
+      "description": "Ansible step group templates for Deployment, CI, and IACM stages",
+      "dependencies": [],
+      "creates": ["step_group_templates"],
+      "category": "templates",
+      "outputs": ["template_urls"]
+    }
+  },
+  "categories": {
+    "platform": "Platform Foundation",
+    "infrastructure": "Build Infrastructure",
+    "ci": "Continuous Integration",
+    "ci_security": "CI + Security",
+    "security": "Security Scanning",
+    "ccm": "Cloud Cost Management",
+    "secrets": "Secret Management",
+    "templates": "Reusable Templates"
+  },
+  "dependency_order": [
+    "harness-platform-setup",
+    "harness-organization",
+    "harness-project",
+    "central-build-farm-setup",
+    "ci-module-primer",
+    "ci-golden-pipeline",
+    "ci-sto-hcr-standard",
+    "sto-sast-primer",
+    "ccm-k8s-connectors",
+    "ccm-auto-k8s-connectors",
+    "ccm-autostop-primer",
+    "ccm-cluster-orchestrator-deployment",
+    "rbac-manager",
+    "harness-ci-image-factory",
+    "delegate-image-factory",
+    "secret_manager_github_pat",
+    "secret-manager-cyberark-conjur",
+    "ansible-step-group-template"
+  ]
+}

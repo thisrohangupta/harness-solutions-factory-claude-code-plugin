@@ -1,0 +1,8 @@
+{
+  "name": "harness-factory",
+  "description": "Harness Platform provisioning factory. Describe what you want, we generate and apply the Terraform. Manages organizations, projects, CI/CD pipelines, security scanning, CCM/FinOps, secrets, RBAC, and build infrastructure.",
+  "version": "1.0.0",
+  "author": {
+    "name": "Harness Solutions Engineering"
+  }
+}
