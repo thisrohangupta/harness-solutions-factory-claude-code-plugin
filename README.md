@@ -196,6 +196,66 @@ The plugin enforces guardrails to prevent accidental damage:
 
 ---
 
+## Docker
+
+The plugin is packaged as a container image for non-interactive use in CI/CD pipelines.
+
+### Build the image
+
+```bash
+make docker-build
+```
+
+### Run locally
+
+```bash
+export ANTHROPIC_API_KEY=your_key
+export HARNESS_ACCOUNT_ID=your_account_id
+export HARNESS_PLATFORM_API_KEY=your_api_key
+
+make docker-run PROMPT="Create an org called Platform Engineering"
+```
+
+### Debug shell
+
+```bash
+make docker-shell
+```
+
+---
+
+## Running in Harness Pipelines
+
+Use the agent template in `templates/harness-factory-agent/` to run the plugin as a step in a Harness pipeline. The template follows the [Harness agents](https://github.com/thisrohangupta/agents) convention and can be imported directly.
+
+### Pipeline inputs
+
+| Input              | Type   | Required | Default                          |
+|--------------------|--------|----------|----------------------------------|
+| `anthropicKey`     | secret | Yes      | —                                |
+| `harnessAccountId` | string | Yes      | —                                |
+| `harnessApiKey`    | secret | Yes      | —                                |
+| `harnessEndpoint`  | string | No       | `https://app.harness.io/gateway` |
+| `prompt`           | string | Yes      | —                                |
+| `maxTurns`         | string | No       | `30`                             |
+
+### Example
+
+```yaml
+# In your Harness pipeline, reference the container step:
+- name: harness_factory_agent
+  run:
+    container:
+      image: harness/factory-agent:1.0.0
+    with:
+      prompt: "Create an org called Platform Engineering with a project called shared-services"
+      anthropic_api_key: <+secrets.getValue("anthropic_key")>
+      harness_account_id: <+account.identifier>
+      harness_api_key: <+secrets.getValue("harness_api_key")>
+```
+
+---
+
 ## Repo Structure
 
 ```
@@ -206,8 +266,17 @@ The plugin enforces guardrails to prevent accidental damage:
 ├── commands/                  # Slash commands (setup, status, destroy, help)
 ├── hooks/
 │   └── hooks.json             # Pre-execution safety hooks
-├── scripts/                   # Helper scripts used by skills
+├── scripts/
+│   ├── entrypoint.sh          # Container entrypoint
+│   └── terraform-safe-run.sh  # Safety hook script
 ├── skills/                    # 13 auto-invocable skills
+├── templates/
+│   └── harness-factory-agent/ # Harness pipeline template
+│       ├── metadata.json
+│       ├── pipeline.yaml
+│       └── wiki.MD
+├── Dockerfile                 # Container image definition
+├── Makefile                   # Build / run / push shortcuts
 ├── providers.tf.example       # Harness provider template
 ├── harness-platform-setup/    # ┐
 ├── harness-organization/      # │

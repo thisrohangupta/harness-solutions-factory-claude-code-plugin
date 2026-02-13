@@ -1,0 +1,5 @@
+{
+    "name": "Harness Factory Agent",
+    "description": "AI-powered Harness Platform provisioning agent. Describe what you want — organizations, projects, CI/CD pipelines, security scanning, cloud cost management — and the agent generates and applies the Terraform.",
+    "version": "1.0.0"
+}

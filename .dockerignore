@@ -1,0 +1,16 @@
+.git/
+*.tfstate
+*.tfstate.*
+*.tfvars
+!*.tfvars.example
+.terraform/
+**/.terraform/
+**/.terraform.lock.hcl
+**/providers.tf
+**/backend.tf
+.DS_Store
+**/.DS_Store
+*.tfplan
+*.tfplan.out
+node_modules/
+.claude/

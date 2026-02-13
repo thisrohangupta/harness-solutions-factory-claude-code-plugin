@@ -1,0 +1,45 @@
+version: 1
+pipeline:
+  stages:
+    - name: provision
+      steps:
+        - name: harness_factory_agent
+          run:
+            container:
+              image: harness/factory-agent:1.0.0
+            with:
+              prompt: <+inputs.prompt>
+              max_turns: <+inputs.maxTurns>
+              harness_account_id: <+inputs.harnessAccountId>
+              harness_api_key: <+inputs.harnessApiKey>
+              harness_endpoint: <+inputs.harnessEndpoint>
+              anthropic_api_key: <+inputs.anthropicKey>
+      platform:
+        os: linux
+        arch: amd64
+  inputs:
+    anthropicKey:
+      type: secret
+      description: Anthropic API key for Claude
+      required: true
+    harnessAccountId:
+      type: string
+      description: Harness account ID
+      required: true
+    harnessApiKey:
+      type: secret
+      description: Harness Platform API key
+      required: true
+    harnessEndpoint:
+      type: string
+      description: Harness API gateway endpoint
+      default: https://app.harness.io/gateway
+    prompt:
+      type: string
+      description: Natural-language instruction for the agent
+      required: true
+    maxTurns:
+      type: string
+      description: Maximum number of agentic turns
+      default: "30"
+  name: harness-factory-agent
